@@ -48,10 +48,14 @@ class RedisService(
     }
 
     fun initialize() {
-        log.warn("Initializing Redis key namespace: payments/")
-        pool.resource.use { jedis ->
-            jedis.set("schema:version", "1")
-            jedis.set("schema:initialized", System.currentTimeMillis().toString())
+        try {
+            pool.resource.use { jedis ->
+                jedis.set("schema:version", "1")
+                jedis.set("schema:initialized", System.currentTimeMillis().toString())
+            }
+            log.warn("Redis initialized, schema version 1")
+        } catch (e: Exception) {
+            log.warn("Redis not available at startup (will retry via readiness probe): {}", e.message)
         }
     }
 
