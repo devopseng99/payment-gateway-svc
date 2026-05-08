@@ -1,0 +1,60 @@
+replicaCount: 1
+
+image:
+  repository: 192.168.29.171:5000/payment-gateway-svc
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+  grpcPort: 4317
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+redis:
+  host: redis
+  port: 6379
+
+env:
+  PORT: "8000"
+
+secretName: payment-gateway-svc-secrets
+
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+serviceAccount:
+  create: true
+  name: payment-gateway-svc
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-gateway-svc
+  namespace: payment-gateway-svc
+  labels:
+    app: payment-gateway-svc
+spec:
+  selector:
+    app: payment-gateway-svc
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP
+    - name: grpc-otlp
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: payment-gateway-svc
+  namespace: payment-gateway-svc
+  labels:
+    app: payment-gateway-svc
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: payment-gateway-svc
+  namespace: payment-gateway-svc
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: payment-gateway-svc
+  namespace: payment-gateway-svc
+subjects:
+  - kind: ServiceAccount
+    name: payment-gateway-svc
+    namespace: payment-gateway-svc
+roleRef:
+  kind: Role
+  name: payment-gateway-svc
+  apiGroup: rbac.authorization.k8s.io

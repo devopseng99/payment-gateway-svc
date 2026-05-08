@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "payment-gateway-svc.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "payment-gateway-svc.labels" . | nindent 4 }}
+data:
+  REDIS_HOST: {{ .Values.redis.host | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
