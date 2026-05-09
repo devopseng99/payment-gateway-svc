@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: 192.168.29.171:5000/payment-gateway-svc
+  repository: localhost/payment-gateway-svc
   tag: latest
-  pullPolicy: Always
+  pullPolicy: Never
 
 service:
   type: ClusterIP
