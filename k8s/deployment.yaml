@@ -25,8 +25,8 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: payment-gateway-svc
-          image: 192.168.29.171:5000/payment-gateway-svc:latest
-          imagePullPolicy: Always
+          image: localhost/payment-gateway-svc:latest
+          imagePullPolicy: Never
           ports:
             - name: http
               containerPort: 8000
@@ -93,14 +93,5 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values: [payment-gateway-svc]
-                topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        kubernetes.io/hostname: mgplcb05
